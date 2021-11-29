@@ -30,7 +30,7 @@ implementors are cautioned against making permanent implementation
 or deployment decisions based on its current contents.
 
 This document and associated reference implementation are hosted on
-[github](https://github.com/cinecert/imf-vtrack-fp)
+[github](https://github.com/cinecert/imf-vtrack-fp).
 
 ## Introduction
 
@@ -94,7 +94,7 @@ adjacent Resources that repeat the same range of edit units.
 The canonicalization procedure is makes the algorithm tolerant of non-substantive differences in the
 CPL syntax used to represent a given timeline.
 This property will produce a consistent output for equivalent timelines without regard to,
-e.g., the use of Segments in the CPL syntax.
+e.g., the use of `Segment` elements in the CPL syntax.
 
 The implementation shall construct a list of Resource items by
 iteration of the `Resource` elements comprising the virtual track to be fingerprinted.
@@ -134,7 +134,7 @@ the fingerprint value. Each Resource item in the list shall be encoded as follow
 to produce the stream of octets that shall comprise the canonical encoding
 of that Resource:
 
-1. The encoder shall write sixteen (16) octets comprising the binary encoding (per RFC 4122) of the `TrackFileId` property;
+1. The encoder shall produce sixteen (16) octets comprising the binary encoding (per RFC 4122) of the `TrackFileId` property;
 2. the encoder shall produce eight (8) octets comprising the big-endian encoding of the `EntryPoint` property;
 3. the encoder shall produce eight (8) octets comprising the big-endian encoding of the `SourceDuration` property;
 4. the encoder shall produce eight (8) octets comprising the big-endian encoding of the `RepeatCount` property.
@@ -145,7 +145,7 @@ message digest computed over the canonical encoding of the
 list of Resource items comprising the virtual track timeline.
 
 The digest context shall be finalized (closed to further input) immediately following
-the contribution to the digest context of the last octets of the canonical encoding of the last
+the contribution to the digest context of the last octet of the canonical encoding of the last
 Resource item in the list of Resource items.
 
 The resulting finalized digest value shall be the Virtual Track Fingerprint,
@@ -157,7 +157,7 @@ digest algorithm the length of this value shall be twenty (20) octets.
 
 In some applications it will be useful to use the digest value directly, without the proposed
 URI prefix. To produce this encoding, the binary Virtual Track Fingerprint value shall be encoded
-as a string of forty (40) hexadecimal characters from the UTF-8 (per Unicode) set `0` - `9`, `a` - `f`.
+as a string of forty (40) hexadecimal characters from the UTF-8 set (per Unicode) `0` - `9`, `a` - `f`.
 
 ### URI Encoding
 
