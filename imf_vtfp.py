@@ -71,44 +71,7 @@ class IterableProperties:
             except:
                 self.attr_index = 0
                 raise StopIteration()
-
-#-------------------------------------------------------------------------------
 #
-
-"""
-The following describes the behavior of an implementation of this proposal.
-
-The following symbols are defined by SMPTE ST 2067-3, CPL: Resource, TrackFileId, EntryPoint, SourceDuration, RepeatCount
-
-The implementation shall construct a list of Clip items by iteration of the Resources comprising the virtual track.
-For each Resource, a Clip item shall be constructed having the properties TrackFileId, EntryPoint, SourceDuration,
-and RepeatCount, the values of which shall be initialized by the respective properties defined in the Resource,
-and realizing any default values that may not be present in the Resource.
-
-Two Clip items shall be determined to be Congruent if they contain the same TrackFileId, EntryPoint, and SourceDuration properties.
-Congruency determination shall not consider the value of RepeatCount.
-
-A Clip item (the present Clip) shall be determined to be a Continuation of the Clip most recently added to the list
-(the previous Clip) when the following conditions are true:
-   * The present Clip is not the first item in the list (i.e., the list is not empty);
-   * The present Clip item and the previous Clip have identical values of the TrackFileId property;
-   * Both the present Clip and the previous Clip have a RepeatCount value of 1;
-   * The index of the first edit unit of the present Clip is exactly one (1) greater than that of the last edit unit in the previous Clip
-     (i.e., the regions of the track file idnetified by the two Clips are contiguous.)
-
-If the present Clip is Congruent to the previous Clip, then the RepeatCount property of the previous Clip shall be
-increased by the value of the RepeatCount property of the present Clip. The present Clip shall then be discarded.
-
-If the present Clip is a Continuation of the previous Clip, then the SourceDuration property of the  previous Clip shall be
-increased by the value of the SourceDuration property of the present Clip. The present Clip shall then be discarded.
-
-In all other cases the present Clip shall be appended to the list.
-
-One constructed, the list of Clip items shall be iterated to produce the input to the message digest context that will
-determine the fingerprint value.
-
-"""
-
 #
 def parse_uuid(id_value):
     if id_value.find("urn:uuid:") == 0:
@@ -133,6 +96,12 @@ class Resource(IterableProperties):
             value = root.find(".//r0:{0}".format(item), cpl_ns_map)
             if value is not None:
                 setattr(self, item, int(value.text))
+
+        if self.SourceDuration == 0:
+            value = root.find(".//r0:IntrinsicDuration", cpl_ns_map).text
+            if value is None:
+                raise ValueError("Missing property is required: IntrinsicDuration.")
+            self.SourceDuration = int(value)
 
         self.set_attr("TrackFileId", parse_uuid(root.find(".//r0:TrackFileId", cpl_ns_map).text))
 
