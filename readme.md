@@ -68,7 +68,7 @@ not significant. Provision is made for comparison of two values having unequal l
 
 [SMPTE ST 2029:2009 — Uniform Resource Names for SMPTE Resources](https://doi.org/10.5594/SMPTE.ST2029.2009)
 
-[SMPTE ST 2067-3:2020 — Interoperable Master Format - Composition Playlist](https://doi.org/10.5594/SMPTE.ST2067.2020)
+[SMPTE ST 2067-3:2020 — Interoperable Master Format - Composition Playlist](https://doi.org/10.5594/SMPTE.ST2067-3.2020)
 
 [ISO/IEC 10118-3:2004 Information technology — Security techniques — Hash-functions — Part 3: Dedicated hash-functions](https://www.iso.org/standard/39876.html)
 
@@ -172,7 +172,7 @@ document, and `<hex-digits>` is the hexadecimal encoding described above in [Tex
 
 
 
-#### Example
+#### URN Example
 
 `urn:smpte:imf-vtfp:190fb72cddad682227cb3f075db9dfb558447a03`.
 
