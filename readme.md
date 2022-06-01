@@ -106,9 +106,9 @@ iteration of the `Resource` elements comprising the virtual track to be fingerpr
 
 Having
 
-    - an IMF Composition Playlist (CPL) and
-    - a UUID value identifying a virtual track in that CPL (the `track-id`);
-    - an intermediate list to contain canonical timeline metadata (initially empty)
+   * an IMF Composition Playlist (CPL) and
+   * a UUID value identifying a virtual track in that CPL (the `track-id`);
+   * an intermediate list to contain canonical timeline metadata (initially empty)
 
 The set of `Resource` elements in the subject Composition Playlist, where the element
 is a descendant of a sub-class of SequenceType having a TrackId value equal to
@@ -125,30 +125,30 @@ three actions shall occur.
 
 Given:
 
-   - Two `Resource` items shall be determined to be *Congruent* if they contain the same
+   * Two `Resource` items shall be determined to be *Congruent* if they contain the same
 `TrackFileId`, `EntryPoint`, and `SourceDuration` properties. Congruency determination
 shall not consider the value of `RepeatCount`; and
 
-   -  A `Resource` item shall be determined to be a *Continuation* of the previous `Resource`
+   *  A `Resource` item shall be determined to be a *Continuation* of the previous `Resource`
       item when all the following conditions are true:
 
-     * The given `Resource` is not the first in the virtual track;
-     * The given `Resource` and the previous `Resource` have identical values of the `TrackFileId` property;
-     * The given `Resource` and the previous `Resource` have a `RepeatCount` value of 1;
-     * The index of the first edit unit of the given `Resource` is exactly one (1) greater than that of the last edit unit of the pervious `Resource` (i.e., the regions of the track file identified by the given `Resource` and the precious `Resource` are contiguous.)
+      * The given `Resource` is not the first in the virtual track;
+      * The given `Resource` and the previous `Resource` have identical values of the `TrackFileId` property;
+      * The given `Resource` and the previous `Resource` have a `RepeatCount` value of 1;
+      * The index of the first edit unit of the given `Resource` is exactly one (1) greater than that of the last edit unit of the pervious `Resource` (i.e., the regions of the track file identified by the given `Resource` and the precious `Resource` are contiguous.)
 
 Then:
 
-    - If the canonical timeline metadata item (the current item) is Congruent with the item
+   * If the canonical timeline metadata item (the current item) is Congruent with the item
     most recently appended to the intermediate list (the previous item,) then the `RepeatCount`
     property of the current item shall be added to the `RepeatCount` property of the previous item
     and the current item shall be discarded.
 
-    - Else if the current item is a Continuation of the previous item, then the `SourceDuration`
+   * Else if the current item is a Continuation of the previous item, then the `SourceDuration`
     property of the current item shall be added	to the `SourceDuration` property of the previous item
     and the current item shall be discarded.
 
-    - Else the current item shall be appended to the intermediate list, thus becoming the
+   * Else the current item shall be appended to the intermediate list, thus becoming the
     previous item.
 
 
