@@ -7,22 +7,41 @@
 # Resource references defined in the selected virtual track of the given
 # IMF composition playlist (CPL.) The resulting identifier is encoded as a URN value.
 #
+# Copyright 2022 CineCert Inc. See /LICENSE.md for terms.
+#
 
 import sys
 import hashlib
 import re
 import struct
 import uuid
+import argparse
 import xml.etree.ElementTree as ElementTree
 
+CT_urn_uuid = "urn:uuid:"
+CT_EntryPoint = "EntryPoint"
+CT_SourceDuration = "SourceDuration"
+CT_RepeatCount = "RepeatCount"
+CT_TrackFileId = "TrackFileId"
+
+# XML namespace names used in IMF CPL documents
 cpl_ns_2013 = "http://www.smpte-ra.org/schemas/2067-3/2013"
 cpl_ns_2016 = "http://www.smpte-ra.org/schemas/2067-3/2016"
 cpl_ns_map = {
+    "r0": None, # to be selected at runtime
     "r1": "http://www.smpte-ra.org/reg/395/2014/13/1/aaf",
     "r2": "http://www.smpte-ra.org/reg/335/2012",
     "r3": "http://www.smpte-ra.org/reg/2003/2012"
     }
 
+# convert string UUID (with optional URM prefix) to uuid.UUID object
+def parse_uuid(id_value):
+    if id_value.find(CT_urn_uuid) == 0:
+        id_value = id_value[9:]
+    return uuid.UUID(id_value)
+
+#
+# XML parsing helper: split ElementTree "{ns}tag" into tuple (ns, tag)
 def split_tag(tag):
     m = re.match("^\{([^\}]+)\}(\w+)$", tag)
     if not m:
@@ -32,11 +51,12 @@ def split_tag(tag):
 def tag_basename(tag):
     return split_tag(tag)[1]
 
-def extract_ns_from_tag(tag):
+def tag_ns(tag):
     return split_tag(tag)[0]
 
 #
 class IterableProperties:
+    """A base class for interrogable property classes."""
     def __init__(self, properties, root=None):
         self.attr_index = 0
         self.attr_names = []
@@ -46,7 +66,7 @@ class IterableProperties:
             self.set_attr(property_item[0], property_item[1])
 
         if root is not None:
-            self.set_attr("NamespaceName", extract_ns_from_tag(root.tag))
+            self.set_attr("NamespaceName", tag_ns(root.tag))
             self.set_attr("TagName", tag_basename(root.tag))
 
             for child in root:
@@ -71,64 +91,64 @@ class IterableProperties:
             except:
                 self.attr_index = 0
                 raise StopIteration()
-#
-#
-def parse_uuid(id_value):
-    if id_value.find("urn:uuid:") == 0:
-        id_value = id_value[9:]
-    return uuid.UUID(id_value)
+
     
 #
 class Resource(IterableProperties):
     """
     A container for an IMF CPL Resource element, having additional operators
-    intended to assist in the calculation of the virtual track thumbprint.
+    intended to assist in the calculation of the virtual track fingerprint.
     """
-    def __init__(self, root):
+    def __init__(self, root=None):
         IterableProperties.__init__(
             self, (
-                ("EntryPoint", 0),
-                ("SourceDuration", 0),
-                ("RepeatCount", 1)
+                (CT_EntryPoint, 0),
+                (CT_SourceDuration, 0),
+                (CT_RepeatCount, 1)
                 ), root)
 
-        for item in ("EntryPoint", "SourceDuration", "RepeatCount"):
-            value = root.find(".//r0:{0}".format(item), cpl_ns_map)
-            if value is not None:
-                setattr(self, item, int(value.text))
+        if root is not None:
+            for item in (CT_EntryPoint, CT_SourceDuration, CT_RepeatCount):
+                value = root.find(".//r0:{0}".format(item), cpl_ns_map)
+                if value is not None:
+                    setattr(self, item, int(value.text))
 
-        if self.SourceDuration == 0:
-            value = root.find(".//r0:IntrinsicDuration", cpl_ns_map).text
-            if value is None:
-                raise ValueError("Missing property is required: IntrinsicDuration.")
-            self.SourceDuration = int(value)
+            if self.SourceDuration == 0:
+                value = root.find(".//r0:IntrinsicDuration", cpl_ns_map).text
+                if value is None:
+                    raise ValueError("Missing property IntrinsicDuration is required.")
 
-        self.set_attr("TrackFileId", parse_uuid(root.find(".//r0:TrackFileId", cpl_ns_map).text))
+                self.SourceDuration = int(value)
 
-    # Two Clip items shall be determined to be Congruent if they contain the
-    # same TrackFileId, EntryPoint, and SourceDuration properties.
+            self.set_attr(CT_TrackFileId, parse_uuid(root.find(".//r0:"+CT_TrackFileId, cpl_ns_map).text))
+
+    #
+    def copy(self):
+        copy = Resource()
+        for item in (CT_TrackFileId, CT_EntryPoint, CT_SourceDuration, CT_RepeatCount):
+            setattr(copy, item, getattr(self, item))
+        return copy
+
+    # Congruency from one Resource to its successor is detected when
+    # both items have the same TrackFileId, EntryPoint, and SourceDuration properties.
     # Congruency determination shall not consider the value of RepeatCount.
-    def is_congruent_to(self, rhs):
-        return self.TrackFileId == rhs.TrackFileId and \
-            self.EntryPoint == rhs.EntryPoint and \
-            self.SourceDuration == rhs.SourceDuration
+    def is_congruent_with(lhs, rhs):
+        return lhs.TrackFileId == rhs.TrackFileId and \
+            lhs.EntryPoint == rhs.EntryPoint and \
+            lhs.SourceDuration == rhs.SourceDuration
 
-    # A Clip item (the present Clip) shall be determined to be a Continuation
-    # of the Clip most recently added to the list
-    # (the previous Clip) when the following conditions are true:
-    #   * The present Clip is not the first item in the list (i.e., the list is not empty);
-    #   * The present Clip item and the previous Clip have identical values of the TrackFileId property;
-    #   * Both the present Clip and the previous Clip have a RepeatCount value of 1;
-    #   * The index of the first edit unit of the present Clip is exactly one (1) greater
-    #     than that of the last edit unit in the previous Clip
-    #     (i.e., the regions of the track file idnetified by the two Clips are contiguous.)
-    def is_continued_by(self, rhs):
-        return self.TrackFileId == rhs.TrackFileId and \
-            self.RepeatCount == 1 and \
+    # Continuity from one Resource to its successor is detected when:
+    # (a) the right-hand Resource and left-hand Resource have equal TrackFileId, and
+    # (b) lhs.RepeatCount and rhs.RepeatCount are 1 (one), and
+    # (c) The first Edit Unit of the right-hand Resource is exactly one (1) greater
+    #     than the last Edit Unit of the left-hand Resource.
+    def is_continued_by(lhs, rhs):
+        return lhs.TrackFileId == rhs.TrackFileId and \
+            lhs.RepeatCount == 1 and \
             rhs.RepeatCount == 1 and \
-            self.EntryPoint + self.SourceDuration + 1 == rhs.EntryPoint
-    
-    # Update the digest withthe canonical encoding of the node properties
+            lhs.EntryPoint + lhs.SourceDuration == rhs.EntryPoint
+
+    # Update the digest with the canonical encoding of the node properties
     def update_digest(self, digest):
         digest.update(self.TrackFileId.bytes)
         digest.update(struct.pack(">Q", self.EntryPoint))
@@ -151,7 +171,7 @@ class Sequence(IterableProperties):
         for item in root.findall(".//r0:Resource", cpl_ns_map):
             self.ResourceList.append(Resource(item))
 
-        self.TrackId = parse_uuid(self.TrackId)
+            self.TrackId = parse_uuid(str(self.TrackId))
 
 #
 class CompositionPlaylist(IterableProperties):
@@ -178,29 +198,31 @@ def create_imf_vtfp_for_track(root, track_id):
     found in virtual track <track_id> in the CPL document.
     """
     cpl = CompositionPlaylist(root)
-    track_id = parse_uuid(track_id)
-    node_list = []
+    md = hashlib.sha1()
+    previous = None
 
     for sequence in cpl.SequenceList:
         if track_id == sequence.TrackId:
             for resource in sequence.ResourceList:
-                present = resource
-                if node_list:
-                    previous = node_list[-1]
-                    if previous.is_congruent_to(present):
-                        previous.RepeatCount += present.RepeatCount
-                        continue
+                if previous is None:
+                    # must be a separate instance so that SourceDuration
+                    # can be altered without side-effect
+                    previous = resource.copy()
+                else:
+                    if previous.is_congruent_with(resource):
+                        previous.RepeatCount += resource.RepeatCount
 
-                    elif previous.is_continued_by(present):
-                        previous.SourceDuration += present.SourceDuration
-                        continue
+                    elif previous.is_continued_by(resource):
+                        previous.SourceDuration += resource.SourceDuration
 
-                node_list.append(present)
+                    else:
+                        previous.update_digest(md)
+                        previous = resource.copy()
 
-    md = hashlib.sha1()
-    for node in node_list:
-        node.update_digest(md)
-                    
+    if previous is None:
+        raise RuntimeError("No such virtual track: \"{0}\".".format(track_id))
+
+    previous.update_digest(md)
     return md.digest()
 
 #
@@ -230,37 +252,73 @@ def setup_cpl_document(filename):
     assert(tree is not None)
     root = tree.getroot()
 
-    ns = extract_ns_from_tag(root.tag)
+    ns = tag_ns(root.tag)
     if ns not in (cpl_ns_2013, cpl_ns_2016):
         raise ValueError("Document root namespace name is not a valid SMPTE IMF CPL namespace.")
+
     cpl_ns_map["r0"] = ns
     return root
 
 #
-#
-if __name__ == "__main__":
-    # Print the thumbprint value of the given virtual track
-    # Option "-n" sets the length of the hexadecimal digest string, default: 10 characters
-    if len(sys.argv) == 5 and sys.argv[2] == "-n":
-        root = setup_cpl_document(sys.argv[1])
-        n = max(2, min(int(sys.argv[3]), 40))
-        vtfp = create_imf_vtfp_for_track(root, sys.argv[4])
-        print(format_imf_vtfp_urn(vtfp, n))
-
-    # Print the thumbprint value of the given virtual track
-    elif len(sys.argv) == 3:
-        root = setup_cpl_document(sys.argv[1])
-        vtfp = create_imf_vtfp_for_track(root, sys.argv[2])
-        print(format_imf_vtfp_urn(vtfp))
-
-    # List the virtual tracks in the CPL
-    elif len(sys.argv) == 2:
-        root = setup_cpl_document(sys.argv[1])
+def main(options):
+    if not options.track_id:
+        # List the virtual tracks in the CPL
+        root = setup_cpl_document(options.cpl_filename)
+        assert("r0" in cpl_ns_map)
         for item in list_imf_cpl_tracks(root):
-            print(item)
+            print(CT_urn_uuid+item)
 
     else:
-        raise RuntimeError("USAGE: imf_vtfp.py <cpl-filename> [-n <n>] [<track-id>]")
+        # Print the fingerprint value of the given virtual track
+        root = setup_cpl_document(options.cpl_filename)
+        track_id = parse_uuid(options.track_id)
+        assert("r0" in cpl_ns_map)
+        vtfp = create_imf_vtfp_for_track(root, track_id)
+        print(format_imf_vtfp_urn(vtfp, options.width))
+
+
+#
+def setup_parser(parser):
+    parser.add_argument(
+        "cpl_filename", metavar="cpl-filename")
+
+    parser.add_argument(
+        "track_id", metavar="track-id", nargs="?")
+
+    parser.add_argument(
+        "-w", "--width", dest="width", action="store", metavar="n", type=int, default=8,
+        help="Number of hex digits in the identifier.")
+
+    parser.add_argument(
+        "--with-stack-trace", action="store_true", dest="with_stack_trace", default=False,
+        help="Display a Python stack trace when an error occurs")
+
+#
+#
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(
+        version = "0.2",
+        usage = "imf_vtfp.py <cpl-filename> [-n <n>] [<track-id>]",
+        description = "Calculate IMF Virtual Track Fingerprint"
+    )
+
+    setup_parser(parser)
+    options = parser.parse_args()
+
+    if options.with_stack_trace:
+        main(options)
+    else:
+        try:
+            main(options)
+
+        except KeyboardInterrupt:
+            sys.stderr.write('\nProgram interrupted.\n')
+            sys.exit(2)
+
+        except Exception as e:
+            sys.stderr.write(str(e) + '\n')
+            sys.stderr.write('Program stopped on error.\n')
+            sys.exit(1)
 
 
 #

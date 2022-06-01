@@ -21,11 +21,11 @@
 
 ## Status
 
-This DRAFT memo describes a proposed method for use by IMF applications.
-At this time the memo is open for comment. If the proposal is adopted by a
-sufficiently large subset of the IMF community this memo will then be submitted to
+This DRAFT proposal describes a method for use by IMF applications.
+At this time the proposal is open for comment. If the proposal is adopted by a
+sufficiently large subset of the IMF community this proposal will then be submitted to
 [SMPTE](https://www.smpte.org) for publication as standard (ST) engineering document.
-Substantial changes to this memo might occur during this process, and
+Substantial changes to this proposal might occur during this process, and
 implementors are cautioned against making permanent implementation
 or deployment decisions based on its current contents.
 
@@ -88,51 +88,75 @@ The following symbols are defined by SMPTE ST 2067-3 Composition Playlist:
 
 ### Timeline Digest Algorithm
 
+#### Description
+
 A virtual track timeline is prepared for message digest by canonicalization of the CPL
-Resources that comprise the timeline. This procedure joins contiguous regions and consolidates
+Resources that comprise the timeline. This procedure joins contiguous Resources and consolidates
 adjacent Resources that repeat the same range of edit units.
-The canonicalization procedure is makes the algorithm tolerant of non-substantive differences in the
+The canonicalization procedure makes the algorithm tolerant of non-substantive differences in the
 CPL syntax used to represent a given timeline.
 This property will produce a consistent output for equivalent timelines without regard to,
 e.g., the use of `Segment` elements in the CPL syntax.
 
 The implementation shall construct a list of Resource items by
 iteration of the `Resource` elements comprising the virtual track to be fingerprinted.
-For each `Resource` element, a Resource item shall be constructed
-having identical values for the properties
-`TrackFileId`, `EntryPoint`, `SourceDuration`, and `RepeatCount`.
 
-Two Resource items shall be determined to be *Congruent* if they contain the same
-`TrackFileId`, `EntryPoint`, and `SourceDuration` properties.
-Congruency determination shall not consider the value of `RepeatCount`.
+#### Procedure
 
-A Resource item (the Present Resource) shall be determined to be a *Continuation*
-of the Resource item most recently added to the list of Resource items
-(the Previous Resource) when the following conditions are true:
-   * The Present Resource is not the first item in the list (i.e., the list is not empty);
-   * The Present Resource and the Previous Resource have identical values of the `TrackFileId` property;
-   * Both the Present Resource and the Previous Resource have a `RepeatCount` value of 1;
-   * The index of the first edit unit of the Present Resource is exactly one (1) greater than
-     that of the last edit unit in the Previous Resource
-     (i.e., the regions of the track file identified by the Previous Resource and the Present Resource are contiguous.)
+Having
 
-If the Present Resource is Congruent to the Previous Resource, then
-the `RepeatCount` property of the Previous Resource shall be
-increased by the value of the `RepeatCount` property of the Present Resource.
-The Present Resource shall then be discarded.
+    o an IMF Composition Playlist (CPL) and
+    o a UUID value identifying a virtual track in that CPL (the `track-id`);
+    o an intermediate list to contain canonical timeline metadata (initially empty)
 
-If the Present Resource is a Continuation of the Previous Resource,
-then the `SourceDuration` property of the Previous Resource shall be
-increased by the value of the `SourceDuration` property of the Present Resource.
-The Present Resource shall then be discarded.
+The set of `Resource` elements in the subject Composition Playlist, where the element
+is a descendant of a sub-class of SequenceType having a TrackId value equal to
+`track-id`, shall be iterated in order.
 
-In all other cases the Present Resource shall be appended to the list of Resource items.
+For each `Resource` element so considered, a canonical timeline metadata item shall be
+created having values for the properties
+`TrackFileId`, `EntryPoint`, `SourceDuration`, and `RepeatCount`
+that are identical to those in the respective `Resource` element.
 
-Once constructed, the list of Resource items shall be iterated to
+If the `Resource` element is the first in the timeline, then the respective canonical
+timeline metadata item shall be appended to the intermediate list. Otherwise one of
+three actions shall occur.
+
+Given:
+
+   o Two `Resource` items shall be determined to be *Congruent* if they contain the same
+`TrackFileId`, `EntryPoint`, and `SourceDuration` properties. Congruency determination
+shall not consider the value of `RepeatCount`; and
+
+   o  A `Resource` item shall be determined to be a *Continuation* of the previous `Resource`
+      item when all the following conditions are true:
+     * The given `Resource` is not the first in the virtual track;
+     * The given `Resource` and the previous `Resource` have identical values of the `TrackFileId` property;
+     * The given `Resource` and the previous `Resource` have a `RepeatCount` value of 1;
+     * The index of the first edit unit of the given `Resource` is exactly one (1) greater than
+       that of the last edit unit of the pervious `Resource`
+       (i.e., the regions of the track file identified by the given `Resource` and the precious `Resource` are contiguous.)
+
+Then:
+
+    o If the canonical timeline metadata item (the current item) is Congruent with the item
+    most recently appended to the intermediate list (the previous item,) then the `RepeatCount`
+    property of the current item shall be added to the `RepeatCount` property of the previous item
+    and the current item shall be discarded.
+
+    o Else if the current item is a Continuation of the previous item, then the `SourceDuration`
+    property of the current item shall be added	to the `SourceDuration` property of the previous item
+    and the current item shall be discarded.
+
+    o Else the current item shall be appended to the intermediate list, thus becoming the
+    previous item.
+
+
+Once constructed, the intermediate list shall be iterated to
 produce the input to the message digest context that shall determine
-the fingerprint value. Each Resource item in the list shall be encoded as follows
+the fingerprint value. Each item in the list shall be encoded as follows
 to produce the stream of octets that shall comprise the canonical encoding
-of that Resource:
+of that item:
 
 1. The encoder shall produce sixteen (16) octets comprising the binary encoding (per RFC 4122) of the `TrackFileId` property;
 2. the encoder shall produce eight (8) octets comprising the big-endian encoding of the `EntryPoint` property;
@@ -141,7 +165,7 @@ of that Resource:
 
 The fingerprint of an IMF virtual track shall be the SHA-1
 ( [ISO/IEC 10118-3](https://www.iso.org/standard/39876.html) )
-message digest computed over the canonical encoding of the
+message digest computed over the canonical encoding of each successive item in the
 list of Resource items comprising the virtual track timeline.
 
 The digest context shall be finalized (closed to further input) immediately following
@@ -162,7 +186,7 @@ as a string of forty (40) hexadecimal characters from the UTF-8 set (per Unicode
 ### URI Encoding
 
 For best portability it is useful to encode a Virtual Track Fingerprint as a string value
-that is readily recognizable as conforming to this memo.
+that is readily recognizable as conforming to this proposal.
 This encoding shall be referred to as `IMF-VTRACK-FP`.
 
 The `IMF-VTRACK-FP` value is created by encoding the
@@ -191,9 +215,9 @@ The identifier structure for the IMF-VTRACK-FP subnamespace (IMF-VTRACK-FP-NSS),
 
 ```BNF
 IMF-VTRACK-FP-NSS  = "smpte: imf-vtfp:" IMF-VTRACK-FP
-IMF-VTRACK-FP = 4*128HEX-DIGIT
+IMF-VTRACK-FP = 4*40HEX-DIGIT
 HEX-DIGIT = %x30-39 / ; 0-9
-                  %x61-66 / ; a-f
+            %x61-66 / ; a-f
 ```
 
 The hexadecimal digits in the URN representation of an `IMF-VTRACK-FP`
@@ -205,12 +229,7 @@ shall be the hexadecimal representation of the [Virtual Track Fingerprint](#virt
 ### Lexical Equivalence
 
 The lexical equivalence of `IMF-VTRACK-FP` URN values shall be determined by
-an exact string match that is case-insensitive for hexadecimal characters.
-
-Note: The BNF expression of the IMF-VTRACK-FP indicates that values must use lower-case `a` - `f`,
-however the above requirement for a case-insensitive match allows for the likely case
-that some implementers will be careless. This provision is intended to increase the probability
-of a correct match in these cases.
+an exact string match that is case-sensitive.
 
 ### Abbreviated Thumbprint Values
 
@@ -225,9 +244,44 @@ The following is equivalent to [URN Example](#urn-example) above: `urn:smpte:imf
 
 ## Reference Implementation
 
-This memo is supplemented by an implementation of the algorithm in Python. See the attached element `imf_vtfp.py`.
+This proposal is supplemented by an implementation of the algorithm in Python. See the attached element `imf_vtfp.py`.
 
 ## Bibliography
 
 Python — [The Python Programming Language — Project Home](https://www.python.org/)
+
+## Test Material
+
+A set of IMF Composition Playlist files has been created to accompany this proposal. The files
+all represent the same timeline over the same track file clips, but do so using various arrangements
+of `Resource` elements to illustrate the variety of formulations the proposed algorithm
+is intended to accommodate.
+
+All of the files in the test set contain a single `MainImage` virtual track, having the
+Virtual Track Fingerprint value `urn:smpte:imf-vtfp:11cbefc227319bf4708a6f0cc228a968ecf7c65b`.
+
+![Virtual Track Fingerprint Test Compositions](imf_vtfp_test_cpl_diagram.png)
+
+### vtfp1.cpl.xml
+
+Contains five `Resource` elements in one `Segment` element.
+Three of the `Resource` elements have identical contents.
+
+### vtfp2.cpl.xml
+
+Contains three `Resource` elements in one `Segment` element.
+The middle `Resource` element has a `RepeatCount` value of 3 (three.)
+
+### vtfp3.cpl.xml
+
+Contains four `Resource` elements in one `Segment` element.
+The second `Resource` is a Continuation of the first.
+The third `Resource` element has a `RepeatCount` value of 3 (three.)
+
+### vtfp4.cpl.xml
+
+Contains five `Resource` elements in two `Segment` elements.
+The second `Resource` is a Continuation of the first.
+The fourth `Resource` element has a `RepeatCount` value of 2 (two.)
+
 

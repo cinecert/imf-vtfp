@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CompositionPlaylist xmlns="http://www.smpte-ra.org/schemas/2067-3/2016" xmlns:ic16="http://www.smpte-ra.org/schemas/2067-2/2016" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <Id>urn:uuid:2f501055-b798-45b6-8cfb-abe3dbb5a7df</Id>
+  <Annotation>urn:smpte:imf-vtfp:11cbefc227319bf4708a6f0cc228a968ecf7c65b</Annotation>
+  <IssueDate>2022-05-31T04:45:45+00:00</IssueDate>
+  <ContentTitle>vttp4</ContentTitle>
+  <EditRate>30 1</EditRate>
+  <ExtensionProperties>
+    <ic16:ApplicationIdentification>http://www.smpte-ra.org/schemas/2067-21/2016</ic16:ApplicationIdentification>
+  </ExtensionProperties>
+  <SegmentList>
+  <!-- 2 segments -->
+    <Segment>
+  <!-- Segment 1, 930590 edit units -->
+      <Id>urn:uuid:6dfcb133-2476-48a7-ac3f-395d4c8beecc</Id>
+      <SequenceList>
+        <ic16:MainImageSequence>
+          <Id>urn:uuid:abc74d8e-729e-42b9-9c22-b5fa37f740ba</Id>
+          <TrackId>urn:uuid:1bcc8e23-5ec2-42f2-ab3e-12a0647c7dd6</TrackId>
+          <ResourceList>
+            <Resource xsi:type="TrackFileResourceType">
+              <Id>urn:uuid:a973c8a7-df78-4ba0-a42f-a335f9994701</Id>
+              <EditRate>30 1</EditRate>
+              <IntrinsicDuration>927465</IntrinsicDuration>
+              <EntryPoint>0</EntryPoint>
+              <SourceDuration>463733</SourceDuration>
+              <SourceEncoding>urn:uuid:00000000-0000-0000-0000-000000000000</SourceEncoding>
+              <TrackFileId>urn:uuid:fb35f5c9-b2b7-4c51-b784-72abb9c5155d</TrackFileId>
+            </Resource>
+            <Resource xsi:type="TrackFileResourceType">
+              <Id>urn:uuid:8e912262-24f7-4219-853f-63b379852641</Id>
+              <EditRate>30 1</EditRate>
+              <IntrinsicDuration>927465</IntrinsicDuration>
+              <EntryPoint>463733</EntryPoint>
+              <SourceDuration>463732</SourceDuration>
+              <SourceEncoding>urn:uuid:00000000-0000-0000-0000-000000000000</SourceEncoding>
+              <TrackFileId>urn:uuid:fb35f5c9-b2b7-4c51-b784-72abb9c5155d</TrackFileId>
+            </Resource>
+            <Resource xsi:type="TrackFileResourceType">
+              <Id>urn:uuid:439d15a8-ec42-4a9d-aae1-a65d5e4867a0</Id>
+              <EditRate>30 1</EditRate>
+              <IntrinsicDuration>3125</IntrinsicDuration>
+              <EntryPoint>0</EntryPoint>
+              <SourceDuration>3125</SourceDuration>
+              <SourceEncoding>urn:uuid:00000000-0000-0000-0000-000000000000</SourceEncoding>
+              <TrackFileId>urn:uuid:d8621ab5-bd20-42b5-8014-5bdd08a61f5b</TrackFileId>
+            </Resource>
+          </ResourceList>
+        </ic16:MainImageSequence>
+      </SequenceList>
+    </Segment>
+    <Segment>
+  <!-- Segment 2, 6044 edit units -->
+      <Id>urn:uuid:551bbb06-fd44-4fc6-a3f8-b2f41e272e7a</Id>
+      <SequenceList>
+        <ic16:MainImageSequence>
+          <Id>urn:uuid:50fac56f-74fa-4009-9bf4-7c79165679a6</Id>
+          <TrackId>urn:uuid:1bcc8e23-5ec2-42f2-ab3e-12a0647c7dd6</TrackId>
+          <ResourceList>
+            <Resource xsi:type="TrackFileResourceType">
+              <Id>urn:uuid:747ff0cb-4616-4182-8de6-a45bd86a398e</Id>
+              <EditRate>30 1</EditRate>
+              <IntrinsicDuration>3125</IntrinsicDuration>
+              <EntryPoint>0</EntryPoint>
+              <SourceDuration>3125</SourceDuration>
+              <RepeatCount>2</RepeatCount>
+              <SourceEncoding>urn:uuid:00000000-0000-0000-0000-000000000000</SourceEncoding>
+              <TrackFileId>urn:uuid:d8621ab5-bd20-42b5-8014-5bdd08a61f5b</TrackFileId>
+            </Resource>
+            <Resource xsi:type="TrackFileResourceType">
+              <Id>urn:uuid:d31bb08b-c95c-4989-89fd-68910c032b66</Id>
+              <EditRate>30 1</EditRate>
+              <IntrinsicDuration>3519</IntrinsicDuration>
+              <EntryPoint>600</EntryPoint>
+              <SourceDuration>2919</SourceDuration>
+              <SourceEncoding>urn:uuid:00000000-0000-0000-0000-000000000000</SourceEncoding>
+              <TrackFileId>urn:uuid:1b727642-cf6a-4bb0-9a8a-9bd72df49c1b</TrackFileId>
+            </Resource>
+          </ResourceList>
+        </ic16:MainImageSequence>
+      </SequenceList>
+    </Segment>
+  </SegmentList>
+</CompositionPlaylist>
+

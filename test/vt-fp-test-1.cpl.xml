@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CompositionPlaylist xmlns="http://www.smpte-ra.org/schemas/2067-3/2016" xmlns:ic16="http://www.smpte-ra.org/schemas/2067-2/2016" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <Id>urn:uuid:7352e17e-3c5a-4baf-84a4-9108788ac010</Id>
+  <Annotation>urn:smpte:imf-vtfp:11cbefc227319bf4708a6f0cc228a968ecf7c65b</Annotation>
+  <IssueDate>2022-05-31T04:45:44+00:00</IssueDate>
+  <ContentTitle>vttp1</ContentTitle>
+  <EditRate>30 1</EditRate>
+  <ExtensionProperties>
+    <ic16:ApplicationIdentification>http://www.smpte-ra.org/schemas/2067-21/2016</ic16:ApplicationIdentification>
+  </ExtensionProperties>
+  <SegmentList>
+  <!-- 1 segment -->
+    <Segment>
+  <!-- Segment 1, 939759 edit units -->
+      <Id>urn:uuid:ee9780d4-169c-404a-8ac2-ac327f7a14b7</Id>
+      <SequenceList>
+        <ic16:MainImageSequence>
+          <Id>urn:uuid:131825b0-4457-4932-b391-1dfeac62c69d</Id>
+          <TrackId>urn:uuid:2e2157c6-fe42-4cfe-8566-6219967633be</TrackId>
+          <ResourceList>
+            <Resource xsi:type="TrackFileResourceType">
+              <Id>urn:uuid:fd17daa7-b863-4d96-b515-94a3b53ea28e</Id>
+              <EditRate>30 1</EditRate>
+              <IntrinsicDuration>927465</IntrinsicDuration>
+              <EntryPoint>0</EntryPoint>
+              <SourceDuration>927465</SourceDuration>
+              <SourceEncoding>urn:uuid:00000000-0000-0000-0000-000000000000</SourceEncoding>
+              <TrackFileId>urn:uuid:fb35f5c9-b2b7-4c51-b784-72abb9c5155d</TrackFileId>
+            </Resource>
+            <Resource xsi:type="TrackFileResourceType">
+              <Id>urn:uuid:74f4b6f7-eeb4-4033-9028-33d41bc23667</Id>
+              <EditRate>30 1</EditRate>
+              <IntrinsicDuration>3125</IntrinsicDuration>
+              <EntryPoint>0</EntryPoint>
+              <SourceDuration>3125</SourceDuration>
+              <SourceEncoding>urn:uuid:00000000-0000-0000-0000-000000000000</SourceEncoding>
+              <TrackFileId>urn:uuid:d8621ab5-bd20-42b5-8014-5bdd08a61f5b</TrackFileId>
+            </Resource>
+            <Resource xsi:type="TrackFileResourceType">
+              <Id>urn:uuid:e17bdfb6-6708-4c9c-9f5b-f5de74d1d28e</Id>
+              <EditRate>30 1</EditRate>
+              <IntrinsicDuration>3125</IntrinsicDuration>
+              <EntryPoint>0</EntryPoint>
+              <SourceDuration>3125</SourceDuration>
+              <SourceEncoding>urn:uuid:00000000-0000-0000-0000-000000000000</SourceEncoding>
+              <TrackFileId>urn:uuid:d8621ab5-bd20-42b5-8014-5bdd08a61f5b</TrackFileId>
+            </Resource>
+            <Resource xsi:type="TrackFileResourceType">
+              <Id>urn:uuid:5a453c8f-7603-4af7-8d7f-775134e32b92</Id>
+              <EditRate>30 1</EditRate>
+              <IntrinsicDuration>3125</IntrinsicDuration>
+              <EntryPoint>0</EntryPoint>
+              <SourceDuration>3125</SourceDuration>
+              <SourceEncoding>urn:uuid:00000000-0000-0000-0000-000000000000</SourceEncoding>
+              <TrackFileId>urn:uuid:d8621ab5-bd20-42b5-8014-5bdd08a61f5b</TrackFileId>
+            </Resource>
+            <Resource xsi:type="TrackFileResourceType">
+              <Id>urn:uuid:3b7ac1f7-b5a3-447b-a67a-524a55874116</Id>
+              <EditRate>30 1</EditRate>
+              <IntrinsicDuration>3519</IntrinsicDuration>
+              <EntryPoint>600</EntryPoint>
+              <SourceDuration>2919</SourceDuration>
+              <SourceEncoding>urn:uuid:00000000-0000-0000-0000-000000000000</SourceEncoding>
+              <TrackFileId>urn:uuid:1b727642-cf6a-4bb0-9a8a-9bd72df49c1b</TrackFileId>
+            </Resource>
+          </ResourceList>
+        </ic16:MainImageSequence>
+      </SequenceList>
+    </Segment>
+  </SegmentList>
+</CompositionPlaylist>
+
