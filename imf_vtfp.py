@@ -174,6 +174,22 @@ class Resource(IterableProperties):
 
         return copy
 
+    #
+    def extend_repeat(self, rhs):
+        if self.ResourceType == CT_StereoImageTrackFileResourceType:
+            self.left_eye.extend_repeat(rhs.left_eye)
+            self.right_eye.extend_repeat(rhs.right_eye)
+        else:
+            self.RepeatCount += rhs.RepeatCount
+
+    #
+    def extend_source_duration(self, rhs):
+        if self.ResourceType == CT_StereoImageTrackFileResourceType:
+            self.left_eye.extend_source_duration(rhs.left_eye)
+            self.right_eye.extend_source_duration(rhs.right_eye)
+        else:
+            self.SourceDuration += rhs.SourceDuration
+
     # Congruency from one Resource to its successor is detected when
     # both items have the same TrackFileId, EntryPoint, and SourceDuration properties.
     # Congruency determination shall not consider the value of RepeatCount.
@@ -181,7 +197,7 @@ class Resource(IterableProperties):
         if lhs.ResourceType == CT_StereoImageTrackFileResourceType:
             return lhs.left_eye.is_congruent_with(rhs.left_eye) and \
                 lhs.right_eye.is_congruent_with(rhs.right_eye)
-                
+
         return lhs.TrackFileId == rhs.TrackFileId and \
             lhs.EntryPoint == rhs.EntryPoint and \
             lhs.SourceDuration == rhs.SourceDuration
@@ -266,10 +282,10 @@ def create_imf_vtfp_for_track(root, track_id):
                     previous = resource.copy()
                 else:
                     if previous.is_congruent_with(resource):
-                        previous.RepeatCount += resource.RepeatCount
+                        previous.extend_repeat(resource)
 
                     elif previous.is_continued_by(resource):
-                        previous.SourceDuration += resource.SourceDuration
+                        previous.extend_source_duration(resource)
 
                     else:
                         previous.update_digest(md)
