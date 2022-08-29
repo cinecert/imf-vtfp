@@ -23,15 +23,26 @@ CT_EntryPoint = "EntryPoint"
 CT_SourceDuration = "SourceDuration"
 CT_RepeatCount = "RepeatCount"
 CT_TrackFileId = "TrackFileId"
+CT_LeftEye = "LeftEye"
+CT_RightEye = "RightEye"
+CT_TrackFileResourceType = "TrackFileResourceType"
+CT_StereoImageTrackFileResourceType = "StereoImageTrackFileResourceType"
 
 # XML namespace names used in IMF CPL documents
 cpl_ns_2013 = "http://www.smpte-ra.org/schemas/2067-3/2013"
+cpl_core_ns_2013 = "http://www.smpte-ra.org/schemas/2067-2/2013"
 cpl_ns_2016 = "http://www.smpte-ra.org/schemas/2067-3/2016"
+cpl_core_ns_2016 = "http://www.smpte-ra.org/schemas/2067-2/2016"
 cpl_ns_map = {
     "r0": None, # to be selected at runtime
-    "r1": "http://www.smpte-ra.org/reg/395/2014/13/1/aaf",
-    "r2": "http://www.smpte-ra.org/reg/335/2012",
-    "r3": "http://www.smpte-ra.org/reg/2003/2012"
+    "r1": None, # to be selected at runtime
+    "r2": "http://www.smpte-ra.org/reg/395/2014/13/1/aaf",
+    "r3": "http://www.smpte-ra.org/reg/335/2012",
+    "r4": "http://www.smpte-ra.org/reg/2003/2012"
+    }
+core_ns_map = {
+    cpl_ns_2013: cpl_core_ns_2013,
+    cpl_ns_2016: cpl_core_ns_2016
     }
 
 # convert string UUID (with optional URM prefix) to uuid.UUID object
@@ -92,7 +103,7 @@ class IterableProperties:
                 self.attr_index = 0
                 raise StopIteration()
 
-    
+
 #
 class Resource(IterableProperties):
     """
@@ -107,32 +118,70 @@ class Resource(IterableProperties):
                 (CT_RepeatCount, 1)
                 ), root)
 
+        self.ResourceType = CT_TrackFileResourceType
+
         if root is not None:
+            if root.attrib:
+                self.ResourceType = root.attrib['{http://www.w3.org/2001/XMLSchema-instance}type']
+            n = self.ResourceType.find(':')
+            if n != -1:
+                self.ResourceType = self.ResourceType[n+1:]
+
             for item in (CT_EntryPoint, CT_SourceDuration, CT_RepeatCount):
-                value = root.find(".//r0:{0}".format(item), cpl_ns_map)
+                value = root.find(".//r0:"+item, cpl_ns_map)
                 if value is not None:
                     setattr(self, item, int(value.text))
 
             if self.SourceDuration == 0:
                 value = root.find(".//r0:IntrinsicDuration", cpl_ns_map).text
                 if value is None:
-                    raise ValueError("Missing property IntrinsicDuration is required.")
+                    raise ValueError("Required property IntrinsicDuration is missing.")
 
                 self.SourceDuration = int(value)
 
-            self.set_attr(CT_TrackFileId, parse_uuid(root.find(".//r0:"+CT_TrackFileId, cpl_ns_map).text))
+            if self.ResourceType == CT_StereoImageTrackFileResourceType:
+                le = root.find(".//r1:"+CT_LeftEye, cpl_ns_map)
+                re = root.find(".//r1:"+CT_RightEye, cpl_ns_map)
+                if le is None or re is None:
+	            raise ValueError("Malformed stereo image resource.")
+
+                self.left_eye = Resource(le)
+                self.right_eye = Resource(re)
+                self.TrackFileId = None
+
+                if self.left_eye.EditRate != self.right_eye.EditRate:
+	            raise ValueError("Left/Right EditRate mismatch.")
+
+                if self.left_eye.SourceDuration != self.right_eye.SourceDuration:
+                    raise ValueError("Left/Right SourceDuration mismatch.")
+
+                if self.left_eye.RepeatCount != self.right_eye.RepeatCount:
+                    raise ValueError("Left/Right RepeatCount mismatch.")
+            else:
+                self.set_attr(CT_TrackFileId, parse_uuid(root.find(".//r0:"+CT_TrackFileId, cpl_ns_map).text))
+
 
     #
     def copy(self):
         copy = Resource()
+        copy.ResourceType = self.ResourceType
         for item in (CT_TrackFileId, CT_EntryPoint, CT_SourceDuration, CT_RepeatCount):
             setattr(copy, item, getattr(self, item))
+
+        if self.ResourceType == CT_StereoImageTrackFileResourceType:
+            copy.left_eye = self.left_eye
+            copy.right_eye = self.right_eye
+
         return copy
 
     # Congruency from one Resource to its successor is detected when
     # both items have the same TrackFileId, EntryPoint, and SourceDuration properties.
     # Congruency determination shall not consider the value of RepeatCount.
     def is_congruent_with(lhs, rhs):
+        if lhs.ResourceType == CT_StereoImageTrackFileResourceType:
+            return lhs.left_eye.is_congruent_with(rhs.left_eye) and \
+                lhs.right_eye.is_congruent_with(rhs.right_eye)
+                
         return lhs.TrackFileId == rhs.TrackFileId and \
             lhs.EntryPoint == rhs.EntryPoint and \
             lhs.SourceDuration == rhs.SourceDuration
@@ -143,6 +192,10 @@ class Resource(IterableProperties):
     # (c) The first Edit Unit of the right-hand Resource is exactly one (1) greater
     #     than the last Edit Unit of the left-hand Resource.
     def is_continued_by(lhs, rhs):
+        if lhs.ResourceType == CT_StereoImageTrackFileResourceType:
+            return lhs.left_eye.is_continued_by(rhs.left_eye) and \
+                lhs.right_eye.is_continued_by(rhs.right_eye)
+
         return lhs.TrackFileId == rhs.TrackFileId and \
             lhs.RepeatCount == 1 and \
             rhs.RepeatCount == 1 and \
@@ -150,10 +203,14 @@ class Resource(IterableProperties):
 
     # Update the digest with the canonical encoding of the node properties
     def update_digest(self, digest):
-        digest.update(self.TrackFileId.bytes)
-        digest.update(struct.pack(">Q", self.EntryPoint))
-        digest.update(struct.pack(">Q", self.SourceDuration))
-        digest.update(struct.pack(">Q", self.RepeatCount))
+        if self.ResourceType == CT_StereoImageTrackFileResourceType:
+            self.left_eye.update_digest(digest)
+            self.right_eye.update_digest(digest)
+        else:
+            digest.update(self.TrackFileId.bytes)
+            digest.update(struct.pack(">Q", self.EntryPoint))
+            digest.update(struct.pack(">Q", self.SourceDuration))
+            digest.update(struct.pack(">Q", self.RepeatCount))
 
 #
 class Sequence(IterableProperties):
@@ -170,7 +227,6 @@ class Sequence(IterableProperties):
         # Gather the Resource elements annd create Resource items.
         for item in root.findall(".//r0:Resource", cpl_ns_map):
             self.ResourceList.append(Resource(item))
-
             self.TrackId = parse_uuid(str(self.TrackId))
 
 #
@@ -257,6 +313,7 @@ def setup_cpl_document(filename):
         raise ValueError("Document root namespace name is not a valid SMPTE IMF CPL namespace.")
 
     cpl_ns_map["r0"] = ns
+    cpl_ns_map["r1"] = core_ns_map[ns]
     return root
 
 #
