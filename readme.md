@@ -255,11 +255,11 @@ This proposal is supplemented by an implementation of the algorithm in Python. S
 
 ## Stereoscopic Constraints
 
-There is a required child element of `StereoImageTrackFileResourceType` (`IntrinsicDuration`) that could
+There is a required child element of `StereoImageTrackFileResourceType`, `IntrinsicDuration`, which could
 be in conflict with the same value in the respective `LeftEye` and `RightEye` sub-elements,
 in the case where the underlying MXF track files do not have equal container duration.
 
-There are also optional elements (EditRate, SourceDuration, RepeatCount) of `StereoImageTrackFileResourceType`
+There are also optional elements (`EditRate`, `SourceDuration`, `RepeatCount`) of `StereoImageTrackFileResourceType`
 which could be in conflict when present, or could be expected (required) by some implementations.
 
 For the purpose of this DRAFT proposal, the following constraints are
