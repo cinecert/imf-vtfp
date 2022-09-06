@@ -16,6 +16,7 @@
       * [Lexical Equivalence](#lexical-equivalence)
       * [Abbreviated Thumbprint Values](#abbreviated-thumbprint-values)
          * [Abbreviated URN Example](#abbreviated-urn-example)
+   * [Stereoscopic Constraints](#stereoscopic-constraints)
    * [Reference Implementation](#reference-implementation)
    * [Test Material](#test-material)
    * [Bibliography](#bibliography)
@@ -163,6 +164,12 @@ of that item:
 3. the encoder shall produce eight (8) octets comprising the big-endian encoding of the `SourceDuration` property;
 4. the encoder shall produce eight (8) octets comprising the big-endian encoding of the `RepeatCount` property.
 
+In the case where the resource items comprising the intermediate list are
+of the type `StereoImageTrackFileResourceType`, steps 1-4 immediately foregoing
+shall be performed twice, first using the child elements of the `LeftEye` element, then
+using the child elements of the `RightEye` element.
+See also [Stereoscopic Constraints](#stereoscopic-constraints) below.
+
 The fingerprint of an IMF virtual track shall be the SHA-1
 ( [ISO/IEC 10118-3](https://www.iso.org/standard/39876.html) )
 message digest computed over the canonical encoding of each successive item in the
@@ -246,6 +253,26 @@ The following is equivalent to [URN Example](#urn-example) above: `urn:smpte:imf
 
 This proposal is supplemented by an implementation of the algorithm in Python. See the attached element `imf_vtfp.py`.
 
+## Stereoscopic Constraints
+
+There is a required child element of `StereoImageTrackFileResourceType` (`IntrinsicDuration`) that could
+be in conflict with the same value in the respective `LeftEye` and `RightEye` sub-elements,
+in the case where the underlying MXF track files do not have equal container duration.
+
+There are also optional elements (EditRate, SourceDuration, RepeatCount) of `StereoImageTrackFileResourceType`
+which could be in conflict when present, or could be expected (required) by some implementations.
+
+For the purpose of this DRAFT proposal, the following constraints are
+implemented in the interpretation of `StereoImageTrackFileResourceType`:
+
+   * The values of the elements `IntrinsicDuration`, `EditRate`, `SourceDuration`, and `RepeatCount` shall be ignored.
+   * The following child elements of the `LeftEye` and `RightEye` elements shall be, respectively, semantically equal:
+      * `EditRate`
+      * `SourceDuration`
+      * `RepeatCount`
+
+The implementation of these constraints is illustrated in the `Resource.__init__` method of the
+[Reference Implementation](#reference-implementation).
 
 ## Test Material
 
