@@ -32,7 +32,7 @@ implementors are cautioned against making permanent implementation
 or deployment decisions based on its current contents.
 
 This document and associated reference implementation are hosted on
-[github](https://github.com/cinecert/imf-vtrack-fp).
+[github](https://github.com/cinecert/imf-vtfp).
 
 ## Introduction
 
