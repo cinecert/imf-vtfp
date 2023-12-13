@@ -108,7 +108,7 @@ iteration of the `Resource` elements comprising the virtual track to be fingerpr
 Having
 
    * an IMF Composition Playlist (CPL) and
-   * a UUID value identifying a virtual track in that CPL (the `track-id`);
+   * a UUID value identifying a virtual track in that CPL (the `track-id`) and
    * an intermediate list to contain canonical timeline metadata (initially empty)
 
 The set of `Resource` elements in the subject Composition Playlist, where the element
@@ -122,7 +122,7 @@ that are identical to those in the respective `Resource` element.
 
 If the `Resource` element is the first in the timeline, then the respective canonical
 timeline metadata item shall be appended to the intermediate list. Otherwise one of
-three actions shall occur.
+three actions shall occur, as follows.
 
 Given:
 
@@ -136,7 +136,7 @@ shall not consider the value of `RepeatCount`; and
       * The given `Resource` is not the first in the virtual track;
       * The given `Resource` and the previous `Resource` have identical values of the `TrackFileId` property;
       * The given `Resource` and the previous `Resource` have a `RepeatCount` value of 1;
-      * The index of the first edit unit of the given `Resource` is exactly one (1) greater than that of the last edit unit of the pervious `Resource` (i.e., the regions of the track file identified by the given `Resource` and the precious `Resource` are contiguous.)
+      * The index of the first edit unit of the given `Resource` is exactly one (1) greater than that of the last edit unit of the previous `Resource` (i.e., the regions of the track file identified by the given `Resource` and the previous `Resource` are contiguous.)
 
 Then:
 
@@ -150,7 +150,7 @@ Then:
     and the current item shall be discarded.
 
    * Else the current item shall be appended to the intermediate list, thus becoming the
-    previous item.
+    "previous item" for the next iteration.
 
 
 Once constructed, the intermediate list shall be iterated to
