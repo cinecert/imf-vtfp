@@ -171,7 +171,9 @@ of the type `StereoImageTrackFileResourceType`, the following procedure
 shall instead be performed:
 
 A. The encoder shall produce eight (8) octets comprising the big-endian encoding of the `SourceDuration` property;
+
 B. the encoder shall produce eight (8) octets comprising the big-endian encoding of the `RepeatCount` property.
+
 C. For each of the child elements `LeftEye` and `RightEye`,
  in that order, steps (1) and (2) above shall be performed.
  For clarity, the progression of serialized items submited to the digest shall be:
@@ -182,7 +184,6 @@ C. For each of the child elements `LeftEye` and `RightEye`,
    - StereoImageTrackFileResourceType::LeftEye::EntryPoint
    - StereoImageTrackFileResourceType::RightEye::TrackFileId
    - StereoImageTrackFileResourceType::RightEye::EntryPoint
-
 
 See also [Stereoscopic Constraints](#stereoscopic-constraints) below.
 
