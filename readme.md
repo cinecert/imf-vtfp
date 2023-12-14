@@ -164,11 +164,29 @@ of that item:
 3. the encoder shall produce eight (8) octets comprising the big-endian encoding of the `SourceDuration` property;
 4. the encoder shall produce eight (8) octets comprising the big-endian encoding of the `RepeatCount` property.
 
+##### StereoImageTrackFileResourceType
+
 In the case where the resource items comprising the intermediate list are
-of the type `StereoImageTrackFileResourceType`, steps 1-4 immediately foregoing
-shall be performed twice, first using the child elements of the `LeftEye` element, then
-using the child elements of the `RightEye` element.
+of the type `StereoImageTrackFileResourceType`, the following procedure
+shall instead be performed:
+
+A. The encoder shall produce eight (8) octets comprising the big-endian encoding of the `SourceDuration` property;
+B. the encoder shall produce eight (8) octets comprising the big-endian encoding of the `RepeatCount` property.
+C. For each of the child elements `LeftEye` and `RightEye`,
+ in that order, steps (1) and (2) above shall be performed.
+ For clarity, the progression of serialized items submited to the digest shall be:
+
+   - StereoImageTrackFileResourceType::SourceDuration
+   - StereoImageTrackFileResourceType::RepeatCount
+   - StereoImageTrackFileResourceType::LeftEye::TrackFileId
+   - StereoImageTrackFileResourceType::LeftEye::EntryPoint
+   - StereoImageTrackFileResourceType::RightEye::TrackFileId
+   - StereoImageTrackFileResourceType::RightEye::EntryPoint
+
+
 See also [Stereoscopic Constraints](#stereoscopic-constraints) below.
+
+##### Text Encoding
 
 The fingerprint of an IMF virtual track shall be the SHA-1
 ( [ISO/IEC 10118-3](https://www.iso.org/standard/39876.html) )
