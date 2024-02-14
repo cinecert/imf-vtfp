@@ -16,7 +16,6 @@
       * [Lexical Equivalence](#lexical-equivalence)
       * [Abbreviated Thumbprint Values](#abbreviated-thumbprint-values)
          * [Abbreviated URN Example](#abbreviated-urn-example)
-   * [Stereoscopic Constraints](#stereoscopic-constraints)
    * [Reference Implementation](#reference-implementation)
    * [Test Material](#test-material)
    * [Bibliography](#bibliography)
@@ -32,7 +31,7 @@ implementors are cautioned against making permanent implementation
 or deployment decisions based on its current contents.
 
 This document and associated reference implementation are hosted on
-[github](https://github.com/cinecert/imf-vtrack-fp).
+[github](https://github.com/cinecert/imf-vtfp).
 
 ## Introduction
 
@@ -86,7 +85,7 @@ not significant. Provision is made for comparison of two values having unequal l
 ### Defined Terms
 
 The following symbols are defined by SMPTE ST 2067-3 Composition Playlist:
-`Resource`, `TrackFileId`, `EntryPoint`, `SourceDuration`, `IntrinsicDuration`, and `RepeatCount`.
+`Resource`, `TrackFileId`, `EntryPoint`, `SourceDuration`, and `RepeatCount`.
 
 ### Timeline Digest Algorithm
 
@@ -96,7 +95,8 @@ A virtual track timeline is prepared for message digest by canonicalization of t
 Resources that comprise the timeline. This procedure joins contiguous Resources and consolidates
 adjacent Resources that repeat the same range of edit units.
 The canonicalization procedure makes the algorithm tolerant of non-substantive differences in the
-CPL syntax used to represent a given timeline.
+CPL syntax used to represent a given timeline, i.e., variations in the use of CPL features
+that result in the same sequence of edit units.
 This property will produce a consistent output for equivalent timelines without regard to,
 e.g., the use of `Segment` elements in the CPL syntax.
 
@@ -105,10 +105,16 @@ iteration of the `Resource` elements comprising the virtual track to be fingerpr
 
 #### Procedure
 
+IMF CPL resources are predominately based on the `SequenceType` element.
+There is however an exception in the `StereoImageTrackFileResourceType`, which requires
+a modified procedure. The `SequenceType` procedure is presented first.
+
+##### SequenceType
+
 Having
 
    * an IMF Composition Playlist (CPL) and
-   * a UUID value identifying a virtual track in that CPL (the `track-id`);
+   * a UUID value identifying a virtual track in that CPL (the `track-id`) and
    * an intermediate list to contain canonical timeline metadata (initially empty)
 
 The set of `Resource` elements in the subject Composition Playlist, where the element
@@ -122,7 +128,7 @@ that are identical to those in the respective `Resource` element.
 
 If the `Resource` element is the first in the timeline, then the respective canonical
 timeline metadata item shall be appended to the intermediate list. Otherwise one of
-three actions shall occur.
+three actions shall occur, as follows.
 
 Given:
 
@@ -136,7 +142,7 @@ shall not consider the value of `RepeatCount`; and
       * The given `Resource` is not the first in the virtual track;
       * The given `Resource` and the previous `Resource` have identical values of the `TrackFileId` property;
       * The given `Resource` and the previous `Resource` have a `RepeatCount` value of 1;
-      * The index of the first edit unit of the given `Resource` is exactly one (1) greater than that of the last edit unit of the pervious `Resource` (i.e., the regions of the track file identified by the given `Resource` and the precious `Resource` are contiguous.)
+      * The index of the first edit unit of the given `Resource` is exactly one (1) greater than that of the last edit unit of the previous `Resource` (i.e., the regions of the track file identified by the given `Resource` and the previous `Resource` are contiguous.)
 
 Then:
 
@@ -150,7 +156,7 @@ Then:
     and the current item shall be discarded.
 
    * Else the current item shall be appended to the intermediate list, thus becoming the
-    previous item.
+    "previous item" for the next iteration.
 
 
 Once constructed, the intermediate list shall be iterated to
@@ -164,11 +170,27 @@ of that item:
 3. the encoder shall produce eight (8) octets comprising the big-endian encoding of the `SourceDuration` property;
 4. the encoder shall produce eight (8) octets comprising the big-endian encoding of the `RepeatCount` property.
 
+##### StereoImageTrackFileResourceType
+
 In the case where the resource items comprising the intermediate list are
-of the type `StereoImageTrackFileResourceType`, steps 1-4 immediately foregoing
-shall be performed twice, first using the child elements of the `LeftEye` element, then
-using the child elements of the `RightEye` element.
-See also [Stereoscopic Constraints](#stereoscopic-constraints) below.
+of the type `StereoImageTrackFileResourceType`, the following procedure
+shall instead be performed:
+
+1. The encoder shall produce eight (8) octets comprising the big-endian encoding of the `SourceDuration` property;
+2. the encoder shall produce eight (8) octets comprising the big-endian encoding of the `RepeatCount` property:
+3. For each of the child elements `LeftEye` and `RightEye`,
+  in that order, steps (1) and (2) of the `SequenceType` procedure shall be performed.
+
+ For clarity, the progression of serialized items submited to the digest shall be:
+
+   - `StereoImageTrackFileResourceType::SourceDuration`
+   - `StereoImageTrackFileResourceType::RepeatCount`
+   - `StereoImageTrackFileResourceType::LeftEye::TrackFileId`
+   - `StereoImageTrackFileResourceType::LeftEye::EntryPoint`
+   - `StereoImageTrackFileResourceType::RightEye::TrackFileId`
+   - `StereoImageTrackFileResourceType::RightEye::EntryPoint`
+
+##### Text Encoding
 
 The fingerprint of an IMF virtual track shall be the SHA-1
 ( [ISO/IEC 10118-3](https://www.iso.org/standard/39876.html) )
@@ -253,35 +275,15 @@ The following is equivalent to [URN Example](#urn-example) above: `urn:smpte:imf
 
 This proposal is supplemented by an implementation of the algorithm in Python. See the attached element `imf_vtfp.py`.
 
-## Stereoscopic Constraints
-
-There is a required child element of `StereoImageTrackFileResourceType`, `IntrinsicDuration`, which could
-be in conflict with the same value in the respective `LeftEye` and `RightEye` sub-elements,
-in the case where the underlying MXF track files do not have equal container duration.
-
-There are also optional elements (`EditRate`, `SourceDuration`, `RepeatCount`) of `StereoImageTrackFileResourceType`
-which could be in conflict when present, or could be expected (required) by some implementations.
-
-For the purpose of this DRAFT proposal, the following constraints are
-implemented in the interpretation of `StereoImageTrackFileResourceType`:
-
-   * The values of the elements `IntrinsicDuration`, `EditRate`, `SourceDuration`, and `RepeatCount` shall be ignored.
-   * The following child elements of the `LeftEye` and `RightEye` elements shall be, respectively, semantically equal:
-      * `EditRate`
-      * `SourceDuration`
-      * `RepeatCount`
-
-The implementation of these constraints is illustrated in the `Resource.__init__` method of the
-[Reference Implementation](#reference-implementation).
-
 ## Test Material
 
-A set of IMF Composition Playlist files has been created to accompany this proposal. The files
+A set of IMF Composition Playlist files has been created to accompany this proposal.
+The first four files (`vtfp1.cpl.xml` - `vtfp4.cpl.xml`)
 all represent the same timeline over the same track file clips, but do so using various arrangements
 of `Resource` elements to illustrate the variety of formulations the proposed algorithm
 is intended to accommodate.
 
-All of the files in the test set contain a single `MainImage` virtual track, having the
+These four files contain a single `MainImage` virtual track, having the
 Virtual Track Fingerprint value `urn:smpte:imf-vtfp:11cbefc227319bf4708a6f0cc228a968ecf7c65b`.
 
 ![Virtual Track Fingerprint Test Compositions](imf_vtfp_test_cpl_diagram.png)
@@ -308,7 +310,12 @@ Contains five `Resource` elements in two `Segment` elements.
 The second `Resource` is a Continuation of the first.
 The fourth `Resource` element has a `RepeatCount` value of 2 (two.)
 
+### vtfp5.cpl.xml
 
+An additional file is provided, identical in structure to `vtfp4.cpl.xml` above,
+but using `StereoImageTrackFileResourceType` (and thus having a different
+VTFP value than the other exaples.) The Virtual Track Fingerprint value
+of this track is `urn:smpte:imf-vtfp:f2fdd91f91797974022640598550966d54895974`.
 
 ## Bibliography
 
