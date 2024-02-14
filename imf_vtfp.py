@@ -34,8 +34,8 @@ cpl_core_ns_2013 = "http://www.smpte-ra.org/schemas/2067-2/2013"
 cpl_ns_2016 = "http://www.smpte-ra.org/schemas/2067-3/2016"
 cpl_core_ns_2016 = "http://www.smpte-ra.org/schemas/2067-2/2016"
 cpl_ns_map = {
-    "r0": None, # to be selected at runtime
-    "r1": None, # to be selected at runtime
+    "r0": None,  # to be selected at runtime
+    "r1": None,  # to be selected at runtime
     "r2": "http://www.smpte-ra.org/reg/395/2014/13/1/aaf",
     "r3": "http://www.smpte-ra.org/reg/335/2012",
     "r4": "http://www.smpte-ra.org/reg/2003/2012"
@@ -54,7 +54,7 @@ def parse_uuid(id_value):
 #
 # XML parsing helper: split ElementTree "{ns}tag" into tuple (ns, tag)
 def split_tag(tag):
-    m = re.match("^\{([^\}]+)\}(\w+)$", tag)
+    m = re.match("^\{([^}]+)}(\w+)$", tag)
     if not m:
         raise ValueError("Unable to extract namespace name from tag value \"{0}\".".format(tag))
     return m.groups()
@@ -263,7 +263,7 @@ class CompositionPlaylist(IterableProperties):
         # Gather the Sequence elements, ignore Segment boundaries.
         # Create Sequence items.
         for item in root.findall(".//r0:SequenceList", cpl_ns_map):
-            for seq_item in item.getchildren():
+            for seq_item in list(item):
                 self.SequenceList.append(Sequence(seq_item))
 
 #
@@ -320,7 +320,6 @@ def format_imf_vtfp_urn(raw_digest, n=10):
     """
     return "urn:smpte:imf-vtfp:" + raw_digest.hex()[:n]
 
-
 #
 def setup_cpl_document(filename):
     tree = ElementTree.parse(filename)
@@ -350,8 +349,8 @@ def main(options):
         track_id = parse_uuid(options.track_id)
         assert("r0" in cpl_ns_map)
         vtfp = create_imf_vtfp_for_track(root, track_id)
+        # print(vtfp)
         print(format_imf_vtfp_urn(vtfp, options.width))
-
 
 #
 def setup_parser(parser):
