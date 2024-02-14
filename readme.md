@@ -278,7 +278,7 @@ This proposal is supplemented by an implementation of the algorithm in Python. S
 ## Test Material
 
 A set of IMF Composition Playlist files has been created to accompany this proposal.
-The first four files (`vtfp1.cpl.xml` - `vtfp4.cpl.xml`)
+The first four files (`vt-fp-test-1.cpl.xml` - `vt-fp-test-4.cpl.xml`)
 all represent the same timeline over the same track file clips, but do so using various arrangements
 of `Resource` elements to illustrate the variety of formulations the proposed algorithm
 is intended to accommodate.
@@ -288,31 +288,31 @@ Virtual Track Fingerprint value `urn:smpte:imf-vtfp:11cbefc227319bf4708a6f0cc228
 
 ![Virtual Track Fingerprint Test Compositions](imf_vtfp_test_cpl_diagram.png)
 
-### vtfp1.cpl.xml
+### vt-fp-test-1.cpl.xml
 
 Contains five `Resource` elements in one `Segment` element.
 Three of the `Resource` elements have identical contents.
 
-### vtfp2.cpl.xml
+### vt-fp-test-2.cpl.xml
 
 Contains three `Resource` elements in one `Segment` element.
 The middle `Resource` element has a `RepeatCount` value of 3 (three.)
 
-### vtfp3.cpl.xml
+### vt-fp-test-3.cpl.xml
 
 Contains four `Resource` elements in one `Segment` element.
 The second `Resource` is a Continuation of the first.
 The third `Resource` element has a `RepeatCount` value of 3 (three.)
 
-### vtfp4.cpl.xml
+### vt-fp-test-4.cpl.xml
 
 Contains five `Resource` elements in two `Segment` elements.
 The second `Resource` is a Continuation of the first.
 The fourth `Resource` element has a `RepeatCount` value of 2 (two.)
 
-### vtfp5.cpl.xml
+### vt-fp-test-5.cpl.xml
 
-An additional file is provided, identical in structure to `vtfp4.cpl.xml` above,
+An additional file is provided, identical in structure to `vt-fp-test-4.cpl.xml` above,
 but using `StereoImageTrackFileResourceType` (and thus having a different
 VTFP value than the other exaples.) The Virtual Track Fingerprint value
 of this track is `urn:smpte:imf-vtfp:e0daeb6f761042adad0e84ad4a85f753523270ed`.
