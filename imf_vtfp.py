@@ -223,8 +223,12 @@ class Resource(IterableProperties):
     # Update the digest with the canonical encoding of the node properties
     def update_digest(self, digest):
         if self.ResourceType == CT_StereoImageTrackFileResourceType:
-            self.left_eye.update_digest(digest)
-            self.right_eye.update_digest(digest)
+            digest.update(struct.pack(">Q", self.SourceDuration))
+            digest.update(struct.pack(">Q", self.RepeatCount))
+            digest.update(self.left_eye.TrackFileId.bytes)
+            digest.update(struct.pack(">Q", self.left_eye.EntryPoint))
+            digest.update(self.right_eye.TrackFileId.bytes)
+            digest.update(struct.pack(">Q", self.right_eye.EntryPoint))
         else:
             digest.update(self.TrackFileId.bytes)
             digest.update(struct.pack(">Q", self.EntryPoint))

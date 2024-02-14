@@ -16,7 +16,7 @@
 # 51a7b6bfef12332d2f803733b7acf32cc402c7152e4f9d8ffee7784a68f56452  vt-fp-test-2.cpl.xml
 # b7657b59217477268c3d71110121afcc0bd50654122a8844e2c0691afb8d1cd6  vt-fp-test-3.cpl.xml
 # b3b99b15a34f0cf4d3f49647830aa1b822bee0e33b01d5081ae5366fc95ee46d  vt-fp-test-4.cpl.xml
-
+# 92663cc2a84cf1c0e88d6d24a2b55bb29729e38bbbaf1c5862377f2d73477811  vt-fp-test-5.cpl.xml
 
 
 for item in 1 2 3 4 5
@@ -30,6 +30,7 @@ do
     then
 	echo "${filename} OK"
     else
+        echo "Got ${test_id}, expecting ${match_id}"
 	echo "${filename} FAILED"
     fi
 done

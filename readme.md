@@ -315,7 +315,7 @@ The fourth `Resource` element has a `RepeatCount` value of 2 (two.)
 An additional file is provided, identical in structure to `vtfp4.cpl.xml` above,
 but using `StereoImageTrackFileResourceType` (and thus having a different
 VTFP value than the other exaples.) The Virtual Track Fingerprint value
-of this track is `urn:smpte:imf-vtfp:f2fdd91f91797974022640598550966d54895974`.
+of this track is `urn:smpte:imf-vtfp:e0daeb6f761042adad0e84ad4a85f753523270ed`.
 
 ## Bibliography
 
