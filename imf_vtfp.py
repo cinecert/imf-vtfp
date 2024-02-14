@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 #
 # This file is distributed as part of the IMF Virtual Track Fingerprint proposal
 # published at https://github.com/cinecert/imf-vtfp
@@ -143,20 +143,23 @@ class Resource(IterableProperties):
                 le = root.find(".//r1:"+CT_LeftEye, cpl_ns_map)
                 re = root.find(".//r1:"+CT_RightEye, cpl_ns_map)
                 if le is None or re is None:
-	            raise ValueError("Malformed stereo image resource.")
+                    raise ValueError("Malformed stereo image resource.")
 
                 self.left_eye = Resource(le)
                 self.right_eye = Resource(re)
                 self.TrackFileId = None
 
                 if self.left_eye.EditRate != self.right_eye.EditRate:
-	            raise ValueError("Left/Right EditRate mismatch.")
+                    raise ValueError("Left/Right EditRate mismatch.")
+
+                if self.SourceDuration != self.left_eye.SourceDuration:
+                    raise ValueError("SourceDuration mismatch.")
 
                 if self.left_eye.SourceDuration != self.right_eye.SourceDuration:
                     raise ValueError("Left/Right SourceDuration mismatch.")
 
-                if self.left_eye.RepeatCount != self.right_eye.RepeatCount:
-                    raise ValueError("Left/Right RepeatCount mismatch.")
+                if self.left_eye.RepeatCount != 1 or self.right_eye.RepeatCount != 1:
+                    raise ValueError("Left/Right RepeatCount invalid.")
             else:
                 self.set_attr(CT_TrackFileId, parse_uuid(root.find(".//r0:"+CT_TrackFileId, cpl_ns_map).text))
 
@@ -315,7 +318,7 @@ def format_imf_vtfp_urn(raw_digest, n=10):
     """
     Format a digest value as an IMF-VTFP URN.
     """
-    return "urn:smpte:imf-vtfp:" + raw_digest.encode("hex")[:n]
+    return "urn:smpte:imf-vtfp:" + raw_digest.hex()[:n]
 
 
 #
@@ -370,7 +373,6 @@ def setup_parser(parser):
 #
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(
-        version = "0.2",
         usage = "imf_vtfp.py <cpl-filename> [-n <n>] [<track-id>]",
         description = "Calculate IMF Virtual Track Fingerprint"
     )

@@ -19,12 +19,13 @@
 
 
 
-for item in 1 2 3 4
+for item in 1 2 3 4 5
 do
     filename="vt-fp-test-${item}.cpl.xml"
     vt_id=`../imf_vtfp.py ${filename} | grep MainImageSequence | head -1 | cut -f1 -d' '`
     test_id=`../imf_vtfp.py --with-stack -w40 ${filename} ${vt_id}`
-    match_id=`grep Annotation vt-fp-test-1.cpl.xml| sed 's/<\/Annotation>//' | sed 's/<Annotation>//'`
+    match_id=`grep Annotation ${filename}| sed 's/<\/Annotation>//' | sed 's/<Annotation>//'`
+
     if [ ${match_id} = ${test_id} ]
     then
 	echo "${filename} OK"

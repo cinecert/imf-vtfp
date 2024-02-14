@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CompositionPlaylist xmlns="http://www.smpte-ra.org/schemas/2067-3/2016" xmlns:ic16="http://www.smpte-ra.org/schemas/2067-2/2016" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <Id>urn:uuid:3b876b7d-c385-4bb1-8f7e-f8cf2b729514</Id>
+  <Annotation>urn:smpte:imf-vtfp:f2fdd91f91797974022640598550966d54895974</Annotation>
+  <IssueDate>2024-02-13T17:04:10+00:00</IssueDate>
+  <ContentTitle>vttp5 --stereo--</ContentTitle>
+  <EditRate>30 1</EditRate>
+  <ExtensionProperties>
+    <ic16:ApplicationIdentification>http://www.smpte-ra.org/schemas/2067-21/2016</ic16:ApplicationIdentification>
+  </ExtensionProperties>
+  <SegmentList>
+  <!-- 2 segments -->
+    <Segment>
+  <!-- Segment 1, 930590 edit units -->
+      <Id>urn:uuid:96092152-f717-4543-9ebe-781b705c33f1</Id>
+      <SequenceList>
+        <ic16:MainImageSequence>
+          <Id>urn:uuid:ad0da809-2dc2-481c-9549-da7b9b4cbbd6</Id>
+          <TrackId>urn:uuid:a3bcc62b-d19d-4def-b0ec-814a8f18cae3</TrackId>
+          <ResourceList>
+            <Resource xsi:type="ic16:StereoImageTrackFileResourceType">
+              <Id>urn:uuid:e05a2405-cbd7-4624-9597-d76bc9cb6457</Id>
+              <EditRate>30 1</EditRate>
+              <IntrinsicDuration>927465</IntrinsicDuration>
+              <EntryPoint>0</EntryPoint>
+              <ic16:LeftEye>
+                <Id>urn:uuid:364f3f5c-6863-46f4-86df-fee74effa618</Id>
+                <EditRate>30 1</EditRate>
+                <IntrinsicDuration>927465</IntrinsicDuration>
+                <EntryPoint>0</EntryPoint>
+                <SourceDuration>463733</SourceDuration>
+                <SourceEncoding>urn:uuid:00000000-0000-0000-0000-000000000000</SourceEncoding>
+                <TrackFileId>urn:uuid:fb35f5c9-b2b7-4c51-b784-72abb9c5155d</TrackFileId>
+              </ic16:LeftEye>
+              <ic16:RightEye>
+                <Id>urn:uuid:9cbbdad4-c3a2-49f0-9a1b-6bdb99204f86</Id>
+                <EditRate>30 1</EditRate>
+                <IntrinsicDuration>927465</IntrinsicDuration>
+                <EntryPoint>0</EntryPoint>
+                <SourceDuration>463733</SourceDuration>
+                <SourceEncoding>urn:uuid:00000000-0000-0000-0000-000000000000</SourceEncoding>
+                <TrackFileId>urn:uuid:1e5a8ab4-08b8-46cf-89cc-52ec8d10e048</TrackFileId>
+              </ic16:RightEye>
+            </Resource>
+            <Resource xsi:type="ic16:StereoImageTrackFileResourceType">
+              <Id>urn:uuid:cbb750ac-5fc1-46f5-b542-f2683d8f9cdc</Id>
+              <EditRate>30 1</EditRate>
+              <IntrinsicDuration>927465</IntrinsicDuration>
+              <EntryPoint>463733</EntryPoint>
+              <SourceDuration>463732</SourceDuration>
+              <ic16:LeftEye>
+                <Id>urn:uuid:1fecea64-4c26-4ce1-abda-77dd090439a1</Id>
+                <EditRate>30 1</EditRate>
+                <IntrinsicDuration>927465</IntrinsicDuration>
+                <EntryPoint>463733</EntryPoint>
+                <SourceDuration>463732</SourceDuration>
+                <SourceEncoding>urn:uuid:00000000-0000-0000-0000-000000000000</SourceEncoding>
+                <TrackFileId>urn:uuid:fb35f5c9-b2b7-4c51-b784-72abb9c5155d</TrackFileId>
+              </ic16:LeftEye>
+              <ic16:RightEye>
+                <Id>urn:uuid:604d3e16-8748-4a5a-aacc-b1b8df9c29f4</Id>
+                <EditRate>30 1</EditRate>
+                <IntrinsicDuration>463733</IntrinsicDuration>
+                <EntryPoint>0</EntryPoint>
+                <SourceDuration>463732</SourceDuration>
+                <SourceEncoding>urn:uuid:00000000-0000-0000-0000-000000000000</SourceEncoding>
+                <TrackFileId>urn:uuid:1e5a8ab4-08b8-46cf-89cc-52ec8d10e048</TrackFileId>
+              </ic16:RightEye>
+            </Resource>
+            <Resource xsi:type="ic16:StereoImageTrackFileResourceType">
+              <Id>urn:uuid:efcea0e6-e087-4cdb-a4da-3057fce5e090</Id>
+              <EditRate>30 1</EditRate>
+              <IntrinsicDuration>3125</IntrinsicDuration>
+              <EntryPoint>0</EntryPoint>
+              <SourceDuration>3125</SourceDuration>
+              <ic16:LeftEye>
+                <Id>urn:uuid:785d3c57-3153-4097-93d4-ae3be5de7e9d</Id>
+                <EditRate>30 1</EditRate>
+                <IntrinsicDuration>3125</IntrinsicDuration>
+                <EntryPoint>0</EntryPoint>
+                <SourceDuration>3125</SourceDuration>
+                <SourceEncoding>urn:uuid:00000000-0000-0000-0000-000000000000</SourceEncoding>
+                <TrackFileId>urn:uuid:d8621ab5-bd20-42b5-8014-5bdd08a61f5b</TrackFileId>
+              </ic16:LeftEye>
+              <ic16:RightEye>
+                <Id>urn:uuid:a96cec3f-3136-41d6-8565-4843018865b1</Id>
+                <EditRate>30 1</EditRate>
+                <IntrinsicDuration>3125</IntrinsicDuration>
+                <EntryPoint>0</EntryPoint>
+                <SourceDuration>3125</SourceDuration>
+                <SourceEncoding>urn:uuid:00000000-0000-0000-0000-000000000000</SourceEncoding>
+                <TrackFileId>urn:uuid:9d9ddedc-e060-4f9a-8c8d-221f0d05e1c8</TrackFileId>
+              </ic16:RightEye>
+            </Resource>
+          </ResourceList>
+        </ic16:MainImageSequence>
+      </SequenceList>
+    </Segment>
+    <Segment>
+  <!-- Segment 2, 6044 edit units -->
+      <Id>urn:uuid:156c2b4a-4e95-40ec-b224-e536faa42873</Id>
+      <SequenceList>
+        <ic16:MainImageSequence>
+          <Id>urn:uuid:805c1cc4-1264-4fcd-88d2-cbc42e127882</Id>
+          <TrackId>urn:uuid:a3bcc62b-d19d-4def-b0ec-814a8f18cae3</TrackId>
+          <ResourceList>
+            <Resource xsi:type="ic16:StereoImageTrackFileResourceType">
+              <Id>urn:uuid:768e299b-ed82-4aa4-ba21-54c07195f149</Id>
+              <EditRate>30 1</EditRate>
+              <IntrinsicDuration>3125</IntrinsicDuration>
+              <EntryPoint>0</EntryPoint>
+              <SourceDuration>3125</SourceDuration>
+              <RepeatCount>2</RepeatCount>
+              <ic16:LeftEye>
+                <Id>urn:uuid:949a82ea-16f7-4671-ae81-c902598d999b</Id>
+                <EditRate>30 1</EditRate>
+                <IntrinsicDuration>3125</IntrinsicDuration>
+                <EntryPoint>0</EntryPoint>
+                <SourceDuration>3125</SourceDuration>
+                <RepeatCount>1</RepeatCount>
+                <SourceEncoding>urn:uuid:00000000-0000-0000-0000-000000000000</SourceEncoding>
+                <TrackFileId>urn:uuid:d8621ab5-bd20-42b5-8014-5bdd08a61f5b</TrackFileId>
+              </ic16:LeftEye>
+              <ic16:RightEye>
+                <Id>urn:uuid:949a82ea-16f7-4671-ae81-c902598d999b</Id>
+                <EditRate>30 1</EditRate>
+                <IntrinsicDuration>3125</IntrinsicDuration>
+                <EntryPoint>0</EntryPoint>
+                <SourceDuration>3125</SourceDuration>
+                <RepeatCount>1</RepeatCount>
+                <SourceEncoding>urn:uuid:00000000-0000-0000-0000-000000000000</SourceEncoding>
+                <TrackFileId>urn:uuid:68d2131c-91bd-4c98-8519-6c6d204d52d4</TrackFileId>
+              </ic16:RightEye>
+            </Resource>
+            <Resource xsi:type="ic16:StereoImageTrackFileResourceType">
+              <Id>urn:uuid:c972cfbd-ebb7-407d-9f79-9a3d142e49fb</Id>
+              <EditRate>30 1</EditRate>
+              <IntrinsicDuration>3519</IntrinsicDuration>
+              <EntryPoint>600</EntryPoint>
+              <SourceDuration>2919</SourceDuration>
+              <ic16:LeftEye>
+                <Id>urn:uuid:98215279-4f0f-4993-95b4-afda5be45e64</Id>
+                <EditRate>30 1</EditRate>
+                <IntrinsicDuration>3519</IntrinsicDuration>
+                <EntryPoint>600</EntryPoint>
+                <SourceDuration>2919</SourceDuration>
+                <SourceEncoding>urn:uuid:00000000-0000-0000-0000-000000000000</SourceEncoding>
+                <TrackFileId>urn:uuid:1b727642-cf6a-4bb0-9a8a-9bd72df49c1b</TrackFileId>
+              </ic16:LeftEye>
+              <ic16:RightEye>
+                <Id>urn:uuid:f466ccc7-9065-4848-bc0b-93070e887abf</Id>
+                <EditRate>30 1</EditRate>
+                <IntrinsicDuration>3519</IntrinsicDuration>
+                <EntryPoint>600</EntryPoint>
+                <SourceDuration>2919</SourceDuration>
+                <SourceEncoding>urn:uuid:00000000-0000-0000-0000-000000000000</SourceEncoding>
+                <TrackFileId>urn:uuid:bcccd1b5-a166-4146-9fc7-fbe2b4498bde</TrackFileId>
+              </ic16:RightEye>
+            </Resource>
+          </ResourceList>
+        </ic16:MainImageSequence>
+      </SequenceList>
+    </Segment>
+  </SegmentList>
+</CompositionPlaylist>
+

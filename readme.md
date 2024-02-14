@@ -86,7 +86,7 @@ not significant. Provision is made for comparison of two values having unequal l
 ### Defined Terms
 
 The following symbols are defined by SMPTE ST 2067-3 Composition Playlist:
-`Resource`, `TrackFileId`, `EntryPoint`, `SourceDuration`, and `RepeatCount`.
+`Resource`, `TrackFileId`, `EntryPoint`, `SourceDuration`, `IntrinsicDuration`, and `RepeatCount`.
 
 ### Timeline Digest Algorithm
 
