@@ -82,7 +82,7 @@ not significant. Provision is made for comparison of two values having unequal l
 
 [SMPTE ST 2067-3:2020 — Interoperable Master Format - Composition Playlist](https://pub.smpte.org/doc/st2067-3/)
 
-[ISO/IEC 10118-3:2004 Information technology — Security techniques — Hash-functions — Part 3: Dedicated hash-functions](https://www.iso.org/standard/39876.html)
+[ISO/IEC 10118-3:2018 IT Security techniques — Hash-functions — Part 3: Dedicated hash-functions](https://www.iso.org/standard/67116.html)
 
 [IETF RFC 4122 — A Universally Unique IDentifier (UUID) URN Namespace](https://datatracker.ietf.org/doc/html/rfc4122)
 
