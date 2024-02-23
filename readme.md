@@ -47,6 +47,17 @@ Such values are therefore useful as an identifier, or fingerprint,
 of a given timeline among sets of CPLs,
 which can be useful metadata in the media manufacturing process.
 
+Note that in some IMF applications it will be necessary to take additional steps,
+following the use of the virtual track fingerprint method described below,
+to determine the equivalency of two virtual tracks,
+i.e., that the reproduced essence will be identical.
+An example of such a case can be found in ST 2067-203 ("Audio with Frame-based S-ADM Metadata Plug-in",)
+where the `MGASADMVirtualTrackParameterSet` element is used to select soundfield
+groups from the track files referenced by the respective virtual track.
+In such a case, it is necessary to compare `MGASADMVirtualTrackParameterSet` elements
+– using an application-specific algorithm – to fully determine the equivalence of the
+virtual tracks.
+
 This proposal defines such a fingerprint in two parts. The first part is a message
 digest over a canonical iteration of the timeline elements comprising a virtual track.
 The second part is a URI encoding of that digest.
@@ -67,9 +78,9 @@ not significant. Provision is made for comparison of two values having unequal l
 
 ## Normative References
 
-[SMPTE ST 2029:2009 — Uniform Resource Names for SMPTE Resources](https://doi.org/10.5594/SMPTE.ST2029.2009)
+[SMPTE ST 2029:2009 — Uniform Resource Names for SMPTE Resources](https://pub.smpte.org/doc/2029/)
 
-[SMPTE ST 2067-3:2020 — Interoperable Master Format - Composition Playlist](https://doi.org/10.5594/SMPTE.ST2067-3.2020)
+[SMPTE ST 2067-3:2020 — Interoperable Master Format - Composition Playlist](https://pub.smpte.org/doc/2067-3/)
 
 [ISO/IEC 10118-3:2004 Information technology — Security techniques — Hash-functions — Part 3: Dedicated hash-functions](https://www.iso.org/standard/39876.html)
 
@@ -320,3 +331,5 @@ of this track is `urn:smpte:imf-vtfp:e0daeb6f761042adad0e84ad4a85f753523270ed`.
 ## Bibliography
 
 Python — [The Python Programming Language — Project Home](https://www.python.org/)
+
+[SMPTE ST 2067-203:2023 – Interoperable Master Format (IMF) — Audio with Frame-based S-ADM Metadata Plug-in](https://pub.smpte.org/doc/st2067-203/)
