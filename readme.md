@@ -78,9 +78,9 @@ not significant. Provision is made for comparison of two values having unequal l
 
 ## Normative References
 
-[SMPTE ST 2029:2009 — Uniform Resource Names for SMPTE Resources](https://pub.smpte.org/doc/2029/)
+[SMPTE ST 2029:2009 — Uniform Resource Names for SMPTE Resources](https://pub.smpte.org/doc/st2029/)
 
-[SMPTE ST 2067-3:2020 — Interoperable Master Format - Composition Playlist](https://pub.smpte.org/doc/2067-3/)
+[SMPTE ST 2067-3:2020 — Interoperable Master Format - Composition Playlist](https://pub.smpte.org/doc/st2067-3/)
 
 [ISO/IEC 10118-3:2004 Information technology — Security techniques — Hash-functions — Part 3: Dedicated hash-functions](https://www.iso.org/standard/39876.html)
 
@@ -245,7 +245,7 @@ document, and `<hex-digits>` is the hexadecimal encoding described above in [Tex
 ### IMF-VTRACK-FP URN NID
 
 The NID of an IMF-VTRACK-FP URN shall be `smpte`, as defined in
-[SMPTE ST 2029](https://doi.org/10.5594/SMPTE.ST2029.2009).
+[SMPTE ST 2029](https://pub.smpte.org/doc/st2029/).
 
 ### IMF-VTRACK-FP URN NSS
 
